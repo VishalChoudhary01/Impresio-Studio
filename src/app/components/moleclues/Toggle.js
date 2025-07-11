@@ -23,9 +23,9 @@ const Toggle = () => {
       buttonOnClick={() => dispatch(toggleTheme())}
       buttonText={
         mode === "dark" ? (
-          <FaSun className="text-teal-100/60 " />
+          <FaSun className="text-teal-200/60 " />
         ) : (
-          <FaMoon className="text-teal-100" />
+          <FaMoon className="text-teal-900" />
         )
       }
     />

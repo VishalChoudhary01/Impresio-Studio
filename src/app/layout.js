@@ -1,15 +1,16 @@
-
+// app/layout.js
 import "./globals.css";
-import { Tangerine } from 'next/font/google'
-
+import { Tangerine } from 'next/font/google';
 import Providers from "./components/moleclues/Providers";
+import Navbar from "./components/moleclues/Navbar";
+import Sidebar from "./components/moleclues/Sidebar";
+import Footer from "./components/moleclues/Footer";
 
 const tangerine = Tangerine({
-  variable:"--font-tangerine",
+  variable: "--font-tangerine",
   weight: ['400', '700'],
   subsets: ['latin'],
-})
-
+});
 
 export const metadata = {
   title: "Impresio Studio",
@@ -19,10 +20,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={` ${tangerine.variable} antialiased`}
-      >
-         <Providers>
+      <body className={`${tangerine.variable} antialiased`}>
+        <Providers>
           {children}
         </Providers>
       </body>

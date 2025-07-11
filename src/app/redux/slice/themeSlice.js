@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
-  mode: 'light', // Default value (safe for SSR)
+  mode: 'light', 
 };
 
 const themeSlice = createSlice({
