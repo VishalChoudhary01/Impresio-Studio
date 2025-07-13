@@ -2,33 +2,47 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPhotographers, selectPhotographerById ,fetchPhotographerById} from './../../redux/slice/photographerSlice';
+import { 
+  fetchPhotographerById, 
+  selectCurrentPhotographer,
+  selectLoading,
+  selectError
+} from '../../redux/slice/photographerSlice';
 import Image from 'next/image';
-import { MdLocationPin, MdStar, MdStarHalf, MdStarOutline, MdCalendarToday, MdCameraAlt, MdEmail, MdPhone, MdBookmark, MdShare } from 'react-icons/md';
+import { 
+  MdLocationPin, 
+  MdStar, 
+  MdStarHalf, 
+  MdStarOutline, 
+  MdCalendarToday, 
+  MdCameraAlt, 
+  MdEmail, 
+  MdPhone, 
+  MdBookmark, 
+  MdShare 
+} from 'react-icons/md';
 import { FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
+import GalleryModal from '@/app/components/moleclues/GalleryModal';
 
 const PhotographerProfile = () => {
   const params = useParams();
   const id = Number(params.id);
   const dispatch = useDispatch();
-  const [activeTab, setActiveTab] = useState('portfolio');
-  const [isLoading, setIsLoading] = useState(true);
+  const [openSendEnquire,setOpenSendEnquire]=useState(false)
   
-  const loading = useSelector((state) => state.photographers.loading);
-  const error = useSelector((state) => state.photographers.error);
-  const photographer = useSelector((state) => selectPhotographerById(state, id));
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const photographer = useSelector(selectCurrentPhotographer);
 
   useEffect(() => {
-   if (!photographer && id) {
-    dispatch(fetchPhotographerById(id)); 
+    if (id) {
+      dispatch(fetchPhotographerById(id));
+    }
+  }, [dispatch, id]);
+
+  const handleModal=()=>{
+    setOpenSendEnquire((prevState)=>!prevState)
   }
-    
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 10);
-    
-    return () => clearTimeout(timer);
-  }, [dispatch, photographer, id]);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -51,7 +65,7 @@ const PhotographerProfile = () => {
     return stars;
   };
 
-  if (loading || isLoading || !photographer) {
+  if (loading || !photographer) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-50 dark:bg-slate-900">
         <div className="text-center">
@@ -89,9 +103,9 @@ const PhotographerProfile = () => {
               <Image
                 src={photographer.profilePic}
                 alt={photographer.name}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full"
+                width={160}
+                height={160}
+                className="rounded-full object-cover"
               />
             </div>
             
@@ -160,7 +174,7 @@ const PhotographerProfile = () => {
           <div className="border-b border-gray-200 dark:border-slate-700">
             <nav className="flex flex-wrap">
               <button
-                className={`px-6 py-4 font-medium text-sm ${activeTab === 'portfolio' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                className={`px-6 py-4 font-medium text-sm ${'portfolio' === 'portfolio' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
                 onClick={() => setActiveTab('portfolio')}
               >
                 <span className="flex items-center gap-2">
@@ -169,19 +183,19 @@ const PhotographerProfile = () => {
                 </span>
               </button>
               <button
-                className={`px-6 py-4 font-medium text-sm ${activeTab === 'about' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                className={`px-6 py-4 font-medium text-sm ${'about' === 'about' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
                 onClick={() => setActiveTab('about')}
               >
                 About
               </button>
               <button
-                className={`px-6 py-4 font-medium text-sm ${activeTab === 'reviews' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                className={`px-6 py-4 font-medium text-sm ${'reviews' === 'reviews' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
                 onClick={() => setActiveTab('reviews')}
               >
                 Reviews
               </button>
               <button
-                className={`px-6 py-4 font-medium text-sm ${activeTab === 'contact' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                className={`px-6 py-4 font-medium text-sm ${'contact' === 'contact' ? 'text-teal-600 border-b-2 border-teal-600 dark:text-teal-400 dark:border-teal-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
                 onClick={() => setActiveTab('contact')}
               >
                 Contact
@@ -192,7 +206,7 @@ const PhotographerProfile = () => {
           {/* Tab Content */}
           <div className="p-6">
             {/* Portfolio Tab */}
-            {activeTab === 'portfolio' && (
+            {'portfolio' === 'portfolio' && (
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Portfolio Gallery</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -201,9 +215,8 @@ const PhotographerProfile = () => {
                       <Image 
                         src={img} 
                         alt={`portfolio-${i}`} 
-                        layout="fill"
-                        objectFit="cover"
-                        className="transform transition-transform duration-300 group-hover:scale-105"
+                        fill
+                        className="object-cover transform transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                         <span className="text-white font-medium">Photo Session #{i+1}</span>
@@ -215,7 +228,7 @@ const PhotographerProfile = () => {
             )}
             
             {/* About Tab */}
-            {activeTab === 'about' && (
+            {'about' === 'about' && (
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">About {photographer.name}</h2>
                 <div className="prose prose-teal max-w-none dark:prose-invert">
@@ -279,7 +292,7 @@ const PhotographerProfile = () => {
             )}
             
             {/* Reviews Tab */}
-            {activeTab === 'reviews' && (
+            {'reviews' === 'reviews' && (
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Client Reviews</h2>
                 
@@ -346,22 +359,6 @@ const PhotographerProfile = () => {
                         </div>
                       </div>
                       <p className="text-gray-700 dark:text-gray-300 italic">"{review.comment}"</p>
-                      
-                      {review.photos && review.photos.length > 0 && (
-                        <div className="mt-4 flex gap-2">
-                          {review.photos.slice(0, 3).map((photo, i) => (
-                            <div key={i} className="w-16 h-16 rounded-md overflow-hidden">
-                              <Image
-                                src={photo}
-                                alt={`review-${i}`}
-                                width={64}
-                                height={64}
-                                className="object-cover w-full h-full"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -369,7 +366,7 @@ const PhotographerProfile = () => {
             )}
             
             {/* Contact Tab */}
-            {activeTab === 'contact' && (
+            {'contact' === 'contact' && (
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact {photographer.name}</h2>
                 
@@ -513,11 +510,12 @@ const PhotographerProfile = () => {
       
       {/* Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-10">
-        <button className="bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-full shadow-lg flex items-center gap-2 transition-all transform hover:scale-105">
+        <button onClick={handleModal} className="bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-full shadow-lg flex items-center gap-2 transition-all transform hover:scale-105">
           <MdCalendarToday className="text-xl" />
-          <span>Book Session</span>
+          <span>Send Inquiry</span>
         </button>
       </div>
+      {openSendEnquire && <GalleryModal/>}
     </div>
   );
 };
